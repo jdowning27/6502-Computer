@@ -1,19 +1,21 @@
 #define CLOCK 2
-#define READ_WRITE 3
+#define READ_WRITE 46
 #define ADDR_BASE 22
 #define DATA_BASE 38
 #define ADDR_NUM 16
 #define DATA_NUM 8
 char ADDR[16];
 char DATA[16];
+//const char ADDR[] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37};
+//const char DATA[] = {38, 39, 40, 41, 42, 43, 44, 45};
 
 
 void setup() {
   for (int i = 0; i < ADDR_NUM; i++) {
-    ADDR[i] = ADDR_BASE + i;
+    ADDR[i] = (ADDR_BASE + ADDR_NUM) - (i + 1);
   }
   for (int i = 0; i < DATA_NUM; i++) {
-    DATA[i] = DATA_BASE + i;
+    DATA[i] = (DATA_BASE + DATA_NUM) - (i + 1);
   }
   for (int n = 0; n < 16; n += 1) {
     pinMode(ADDR[n], INPUT);
@@ -23,11 +25,28 @@ void setup() {
   }
   pinMode(CLOCK, INPUT);
   pinMode(READ_WRITE, INPUT);
-
+  
   attachInterrupt(digitalPinToInterrupt(CLOCK), onClock, RISING);
   
   Serial.begin(57600);
+
+  print_pins();
 }
+
+
+void print_pins() {
+  for (int i = 0; i < ADDR_NUM; i++){
+    Serial.print(int(ADDR[i]));
+    Serial.print(", ");
+  }
+  Serial.println(" ");
+  for (int i = 0; i < DATA_NUM; i++){
+    Serial.print(int(DATA[i]));
+    Serial.print(", ");
+  }
+  Serial.println(" ");
+}
+
 
 void onClock() {
   char output[15];
