@@ -1,1 +1,3 @@
-python/*.bin
+/software
+*.out
+*.bin
