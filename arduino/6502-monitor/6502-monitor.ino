@@ -15,7 +15,7 @@ void setup() {
     ADDR[i] = (ADDR_BASE + ADDR_NUM) - (i + 1);
   }
   for (int i = 0; i < DATA_NUM; i++) {
-    DATA[i] = (DATA_BASE + DATA_NUM) - (i + 1);
+    DATA[i] = (DATA_BASE + i);
   }
   for (int n = 0; n < 16; n += 1) {
     pinMode(ADDR[n], INPUT);

@@ -43,6 +43,15 @@ reset:
   lda #0         ; Clear RS/RW/E bits
   sta PORTA
 
+  lda #%00000001 ; Clear the display
+  sta PORTB
+  lda #0         ; Clear RS/RW/E bits
+  sta PORTA
+  lda #E         ; Set E bit to send instruction
+  sta PORTA
+  lda #0         ; Clear RS/RW/E bits
+  sta PORTA
+
   lda #"H"
   sta PORTB
   lda #RS         ; Set RS; Clear RW/E bits
