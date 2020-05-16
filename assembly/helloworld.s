@@ -10,6 +10,9 @@ RS = %00100000
   .org $8000
 
 reset:
+  ldx #$ff       ; initalize the stack pointer to ff
+  txs
+
   lda #%11111111 ; Set all pins on port B to output
   sta DDRB
 
@@ -17,33 +20,57 @@ reset:
   sta DDRA
 
   lda #%00111000 ; Set 8-bit mode; 2-line display; 5x8 font
-  sta PORTB
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
-  lda #E         ; Set E bit to send instruction
-  sta PORTA
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
+  jsr lcd_instruction
 
   lda #%00001110 ; Display on; cursor on; blink off
-  sta PORTB
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
-  lda #E         ; Set E bit to send instruction
-  sta PORTA
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
+  jsr lcd_instruction
 
   lda #%00000110 ; Increment and shift cursor; don't shift display
-  sta PORTB
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
-  lda #E         ; Set E bit to send instruction
-  sta PORTA
-  lda #0         ; Clear RS/RW/E bits
-  sta PORTA
+  jsr lcd_instruction
 
   lda #%00000001 ; Clear the display
+  jsr lcd_instruction
+
+  lda #"H"
+  jsr print_char
+
+  lda #"e"
+  jsr print_char
+
+  lda #"l"
+  jsr print_char
+
+  lda #"l"
+  jsr print_char
+
+  lda #"o"
+  jsr print_char
+
+  lda #","
+  jsr print_char
+  
+  lda #" "
+  jsr print_char
+  
+  lda #"w"
+  jsr print_char
+  
+  lda #"o"
+  jsr print_char
+  
+  lda #"r"
+  jsr print_char
+  
+  lda #"l"
+  jsr print_char
+  
+  lda #"d"
+  jsr print_char
+
+  lda #"!"
+  jsr print_char
+
+lcd_instruction:
   sta PORTB
   lda #0         ; Clear RS/RW/E bits
   sta PORTA
@@ -51,8 +78,9 @@ reset:
   sta PORTA
   lda #0         ; Clear RS/RW/E bits
   sta PORTA
+  rts
 
-  lda #"H"
+print_char:
   sta PORTB
   lda #RS         ; Set RS; Clear RW/E bits
   sta PORTA
@@ -60,114 +88,7 @@ reset:
   sta PORTA
   lda #RS         ; Clear E bits
   sta PORTA
-
-  lda #"e"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"l"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"l"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"o"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #","
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #" "
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"w"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"o"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"r"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"l"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"d"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
-
-  lda #"!"
-  sta PORTB
-  lda #RS         ; Set RS; Clear RW/E bits
-  sta PORTA
-  lda #(RS | E)   ; Set E bit to send instruction
-  sta PORTA
-  lda #RS         ; Clear E bits
-  sta PORTA
+  rts
 
 loop:
   jmp loop
