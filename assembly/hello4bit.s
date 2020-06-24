@@ -2,12 +2,12 @@
 AX = $0100
 BX = $0101
 CX = $0102
-PORTB = $6000
+LCD_PORT = $7001
 ; PORTA = $6001
-DDRB = $6002
+DDR_LCD = $7003
 ; DDRA = $6003
-PORTB_MODE_OUT = %01111111
-PORTB_MODE_IN = %01110000
+LCD_PORT_MODE_OUT = %01111111
+LCD_PORT_MODE_IN = %01110000
 
 
 E  = %00010000
@@ -21,8 +21,8 @@ reset:
   ldx #$ff ; set the stack to 01ff
   txs
 
-  lda #PORTB_MODE_OUT ; Set PORTB to output mode
-  sta DDRB
+  lda #LCD_PORT_MODE_OUT ; Set LCD_PORT to output mode
+  sta DDR_LCD
 
   jsr lcd_init
   jsr print_message
@@ -61,27 +61,27 @@ print_end:
 lcd_wait:
   pha
 
-  lda #PORTB_MODE_IN  ; bottom 4 bits of Port B are input 
-  sta DDRB
+  lda #LCD_PORT_MODE_IN  ; bottom 4 bits of Port B are input 
+  sta DDR_LCD
 lcd_busy:
   lda #RW         ; Set RW; clear RS/E bits
-  sta PORTB
+  sta LCD_PORT
   lda #(RW | E)   ; Set E bit to send instruction
-  sta PORTB
-  lda PORTB       ; Read  the top 4 bits from PORTB
+  sta LCD_PORT
+  lda LCD_PORT       ; Read  the top 4 bits from LCD_PORT
   pha
   lda #RW         ; Set RW; clear RS/E bits
-  sta PORTB
+  sta LCD_PORT
   lda #(RW | E)
-  sta PORTB  
-  lda PORTB       ; read the bottom 4 bits from PORTB
+  sta LCD_PORT  
+  lda LCD_PORT       ; read the bottom 4 bits from LCD_PORT
   pla             ; pull top 4 off the stack, disguarding bottom 4
   and #%00001000
   bne lcd_busy    ; jump to top of loop if busy
   lda #RW
-  sta PORTB       ; clear enable bit
-  lda #PORTB_MODE_OUT  ; Port B is output
-  sta DDRB
+  sta LCD_PORT       ; clear enable bit
+  lda #LCD_PORT_MODE_OUT  ; Port B is output
+  sta DDR_LCD
   
   pla
   rts
@@ -107,11 +107,11 @@ lcd_print_char:
 
 send_nibble:
   ; the pattern we want to send is stored in A
-  sta PORTB
+  sta LCD_PORT
   ora #E          ; set E bit to send
-  sta PORTB
+  sta LCD_PORT
   and #CE         ; clear E bit
-  sta PORTB
+  sta LCD_PORT
   rts
 
 send_byte:
